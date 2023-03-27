@@ -1,11 +1,14 @@
+using Portfolio;
+
 namespace UnitTests
 {
+    using PortfolioManager.Models;
     public class UnitTest1
     {
         [Fact]
-        public void Test1()
+        public void SellAsset_ValidAmount_ReturnTrue()
         {
-
+            PortfolioManager = new PortfolioManager
         }
     }
 }
