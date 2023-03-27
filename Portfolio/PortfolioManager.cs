@@ -9,10 +9,34 @@ using System.Threading.Tasks;
 namespace Portfolio
 {
     public class PortfolioManager : IPortfolioSystem
-    {
-        public void AddFunds(decimal amount)
+    {   
+        //private list
+        private List<Transaction> allTransactions = new List<Transaction>();
+
+        //properties
+        public string PortfolioNumber{get;}
+        public string PortfolioOwner {get; set;}
+
+            public decimal PortfolioBalance
         {
-            throw new NotImplementedException();
+            get
+            {
+                decimal portfolioBalance = 0;
+                foreach (var Transaction in allTransactions)
+                {
+                    portfolioBalance += Transaction.amount;
+                }
+                return portfolioBalance;
+            }
+        }
+
+        public void AddFunds(string portfolioNumber, string portfolioOwner, decimal initialBalance)
+        {
+             //throw new NotImplementedException();
+             PortfolioNumber = portfolioNumber;
+             PortfolioOwner = portfolioOwner;
+             var deposit = new Transaction(PortfolioNumber, initialBalance, DateTime.Now, TransactionType.Deposit, "Initial portfolio balance");
+             allTransactions.Add(deposit);
         }
 
         public List<AssetQuote> GetAssetInformation(List<string> assetNames)
@@ -60,9 +84,13 @@ namespace Portfolio
             throw new NotImplementedException();
         }
 
-        public bool WithdrawFunds(decimal amount)
+         public void WithdrawFunds(string portfolioNumber, string portfolioOwner, decimal initialBalance, DateTime date, decimal amount, string note)
         {
-            throw new NotImplementedException();
+             //throw new NotImplementedException();
+             PortfolioNumber = portfolioNumber;
+             PortfolioOwner = portfolioOwner;
+             var withdraw = new Transaction(PortfolioNumber, initialBalance, DateTime.Now, transactionType.withdraw, "Initial portfolio balance");
+             allTransactions.Add(withdraw);
         }
     }
 }
