@@ -9,34 +9,12 @@ using System.Threading.Tasks;
 namespace Portfolio
 {
     public class PortfolioManager : IPortfolioSystem
-    {   
-        //private list
-        private List<Transaction> allTransactions = new List<Transaction>();
+    {
+        public decimal Balance { get; }
 
-        //properties
-        public string PortfolioNumber{get;}
-        public string PortfolioOwner {get; set;}
-
-            public decimal PortfolioBalance
+        public void AddFunds(decimal amount)
         {
-            get
-            {
-                decimal portfolioBalance = 0;
-                foreach (var Transaction in allTransactions)
-                {
-                    portfolioBalance += Transaction.amount;
-                }
-                return portfolioBalance;
-            }
-        }
-
-        public void AddFunds(string portfolioNumber, string portfolioOwner, decimal initialBalance)
-        {
-             //throw new NotImplementedException();
-             PortfolioNumber = portfolioNumber;
-             PortfolioOwner = portfolioOwner;
-             var deposit = new Transaction(PortfolioNumber, initialBalance, DateTime.Now, TransactionType.Deposit, "Initial portfolio balance");
-             allTransactions.Add(deposit);
+            throw new NotImplementedException();
         }
 
         public List<AssetQuote> GetAssetInformation(List<string> assetNames)
@@ -84,13 +62,9 @@ namespace Portfolio
             throw new NotImplementedException();
         }
 
-         public void WithdrawFunds(string portfolioNumber, string portfolioOwner, decimal initialBalance, DateTime date, decimal amount, string note)
+        public bool WithdrawFunds(decimal amount)
         {
-             //throw new NotImplementedException();
-             PortfolioNumber = portfolioNumber;
-             PortfolioOwner = portfolioOwner;
-             var withdraw = new Transaction(PortfolioNumber, initialBalance, DateTime.Now, transactionType.withdraw, "Initial portfolio balance");
-             allTransactions.Add(withdraw);
+            throw new NotImplementedException();
         }
     }
 }

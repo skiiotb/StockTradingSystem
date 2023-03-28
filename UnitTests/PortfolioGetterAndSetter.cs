@@ -1,4 +1,4 @@
-using Portfolio.Application;
+/*using Portfolio.Application;
 using Portfolio.Model;
 using System;
 using System.Collections.Generic;
@@ -37,7 +37,7 @@ public class Transaction
 
     //Notes adds any extra description to the transaction
 
-    public Transaction(string PortfolioNumber, decimal amount, DateTime date, TransactionType transactionType, string note)
+    public Transaction(string portfolioNumber, decimal amount, DateTime date, TransactionType transactionType, string note)
     {
         PortfolioNumber = portfolioNumber;
         Amount = amount;
@@ -45,11 +45,11 @@ public class Transaction
         TranType = transactionType;
         Notes = note;
         
-    }
+    }*/
 
 
 
-}
+
 
 
 

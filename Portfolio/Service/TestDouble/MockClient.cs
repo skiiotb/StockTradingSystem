@@ -17,7 +17,37 @@ namespace Portfolio.Service.TestDouble
         /// <exception cref="NotImplementedException"></exception>
         public AssetQuote GetQuote(string assetSymbol)
         {
-            throw new NotImplementedException();
+            // Return the same test data every time
+
+            AssetQuote fakeAssetQuote = new AssetQuote();
+            fakeAssetQuote.AssetSymbol = GetAssetFullName(assetSymbol);
+            fakeAssetQuote.AssetFullName = "";
+            fakeAssetQuote.AssetQuoteValue = 250.0m;
+            fakeAssetQuote.RegularMarketOpen = 200.0m;
+            // todo set the rest of the property values
+            return fakeAssetQuote;
+
+
+            //throw new NotImplementedException();
+        }
+
+        private string GetAssetFullName(string assetSymbol)
+        {
+            switch (assetSymbol)
+            {
+                case "APPL":
+                    return "Apple inc";
+                    
+                case "MSFT":
+                    return "Microsoft inc";
+                    ;
+                case "NVDA":
+                    return "Nvidia inc";
+                    ;
+                default:
+                    return "Berkshire holdings";
+
+            }
         }
 
         /// <summary>
