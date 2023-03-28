@@ -21,4 +21,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Portfolio\Portfolio.csproj" />
+  </ItemGroup>
+
 </Project>
