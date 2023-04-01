@@ -27,12 +27,12 @@ namespace Portfolio
 
         public string ListAllInvestements()
         {
-            return "All Investments"; // change when method fully implemented
+            throw new NotImplementedException();
         }
 
         public string ListPortfolioAssetsByName(List<string> assetNames)
         {
-            return "Portfolio assets by name"; // change when fully implemented;
+            throw new NotImplementedException();
         }
 
         public string ListPortfolioInvestementsByType(string assetType)
@@ -47,7 +47,7 @@ namespace Portfolio
 
         public string ListPortfolioSalesInRange(DateTime startDateTime, DateTime endDateTime)
         {
-            return "Portfolio sales in range"; //change when fully implemented
+            throw new NotImplementedException();
         }
 
         public bool PurchaseAsset(string assetSymbol, decimal amount)

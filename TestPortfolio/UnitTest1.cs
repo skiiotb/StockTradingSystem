@@ -4,6 +4,7 @@ namespace TestPortfolio
 {
     public class UnitTest1
     {
+        //A unit test for the method ListAllInvestments() checking if the method returns a null value
         [Fact]
         public void ListAllInvestments_Test()
         {
@@ -18,7 +19,7 @@ namespace TestPortfolio
             }
 
         }
-
+        //A unit test for the method ListPortfolioAssetsByName() checking if the method returns a null value
         [Fact]
         public void ListPortfolioAssetsByName_Test()
         {
@@ -36,7 +37,8 @@ namespace TestPortfolio
             }
 
         }
-
+        //A unit test case for the method ListPortfolioSalesInRange() when DateTime given is valid
+        //also checks if the meethod returns a null value
         [Fact]
         public void ListPortfolioSalesInRange_ValidRange_Test()
         {
@@ -53,7 +55,8 @@ namespace TestPortfolio
             }
 
         }
-
+        //A unit test case for the method ListPortfolioSalesInRange() when DateTime given is invalid,
+        //also checks if the meethod returns a null value
         [Fact]
         public void ListPortfolioSalesInRange_InvalidRange_Test()
         {
