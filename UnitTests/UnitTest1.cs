@@ -10,12 +10,19 @@ namespace UnitTests
             //AAA Unit testing
             //Arrange - get data needed for test
             PortfolioManager testPortfolio = new();
+            testPortfolio.AddFunds(1.5m);
+            testPortfolio.PurchaseAsset("MSFT", 1m);
+            var expectedBalance = 2m;
+  
 
             //Act - invoke method being tested
             var result = testPortfolio.SellAsset("MSFT", 1.5m);
+            testPortfolio.AddFunds(1.5m);
+
 
             //Assert - make sure results are as expected
             Assert.True(result);
+            Assert.Equal(expectedBalance, testPortfolio.Balance);
 
         }
 
@@ -26,6 +33,8 @@ namespace UnitTests
             PortfolioManager testPortfolio = new();
             var assetSymbol = "MSFT";
             var amount = -1.5m;
+            testPortfolio.AddFunds(1.5m);
+            testPortfolio.PurchaseAsset("MSFT", 1.5m);
 
             //Act and assert - make sure method throws exception if invalid amount is entered
             Assert.Throws<ArgumentException>(() => testPortfolio.SellAsset(assetSymbol, amount));
@@ -38,6 +47,8 @@ namespace UnitTests
             PortfolioManager testPortfolio = new();
             var assetSymbol = "BTC";
             var amount = 1.5m;
+            testPortfolio.AddFunds(1.5m);
+            testPortfolio.PurchaseAsset("MSFT", 1.5m);
 
             //Act
             var result = testPortfolio.SellAsset(assetSymbol, amount);
@@ -53,12 +64,15 @@ namespace UnitTests
             //AAA Unit testing
             //Arrange - get data needed for test
             PortfolioManager testPortfolio = new();
+            testPortfolio.AddFunds(1.5m);
+            var expectedBalance = 0;
 
             //Act - invoke method being tested
             var result = testPortfolio.PurchaseAsset("MSFT", 1.5m);
 
             //Assert - make sure results are as expected
             Assert.True(result);
+            Assert.Equal(expectedBalance, testPortfolio.Balance);
 
         }
 
@@ -75,7 +89,7 @@ namespace UnitTests
         }
 
         [Fact]
-        public void purchaseAsset_InvalidAsset_ReturnFalse()
+        public void PurchaseAsset_InvalidAsset_ReturnFalse()
         {
             //Arrange 
             PortfolioManager testPortfolio = new();
@@ -101,9 +115,9 @@ namespace UnitTests
             var result = testPortfolio.ListPortfolioInvestementsByType(assetType);
 
             //Assert
-            if(result == null)
+            if (String.IsNullOrEmpty(result))
             {
-                Assert.Fail("IS NULL");
+                Assert.False(true);
             }
         }
 
