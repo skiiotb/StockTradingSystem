@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Portfolio", "Portfolio\Port
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{CCE2CDE6-F74B-45A7-A17A-F5FA453A745E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{938A7BA6-A631-416C-BE59-843BCF219034}"
+	ProjectSection(SolutionItems) = preProject
+		Portfolio\.editorconfig = Portfolio\.editorconfig
+	EndProjectSection
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestPortfolio", "TestPortfolio\TestPortfolio.csproj", "{0F03FD68-B9C7-4962-98A7-58F2A4D40D50}"
 EndProject
 Global
