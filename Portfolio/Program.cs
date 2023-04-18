@@ -1,6 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Portfolio;
 using Portfolio.Application;
+using Portfolio.Model;
+using Portfolio.Service;
 using Portfolio.Service.Live;
+using Portfolio.Service.TestDouble;
 
 // Load app configuration settings from the app settings file and set relevant feature flags.
 
@@ -17,6 +21,18 @@ Console.WriteLine("Welcome to the ATU Porfolio management system");
 YahooClient financeClient = new YahooClient(url: settings.BaseURL, settings.API_keys);
 financeClient.GetQuote("AAPL");
 /* TODO: Initialise and run your investment portfolio management system */
+
+//YahooClient financeClient = new YahooClient(url: settings.BaseURL, settings.API_keys);
+AssetQuote tempQuote = financeClient.GetQuote("AAPL");
+
+//PortfolioManager portfolio = new PortfolioManager(financeClient);
+
+//MarketClient marketClient = new MockClient();
+
+//PortfolioManager portfolio2 = new PortfolioManager(marketClient);
+
+
+Console.WriteLine($"Live stock information for {tempQuote.AssetFullName} current value is ${tempQuote.AssetQuoteValue}");
 
 /* Remember to add the fictional asset purchases specified in the assignment to the
    portfolio*/
