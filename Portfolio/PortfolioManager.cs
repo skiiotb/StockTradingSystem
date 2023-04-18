@@ -1,5 +1,7 @@
 ﻿using Portfolio.Application;
 using Portfolio.Model;
+using Portfolio.Service.TestDouble;
+using Portfolio.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +13,43 @@ namespace Portfolio
     public class PortfolioManager : IPortfolioSystem
     {
 
+        //List of assets
+        List<Asset> _portfolioAssets;
+
+        //Market Client
+        IMarketClient _client;
+
+
+        private decimal balance;
+
+        public PortfolioManager()
+        {
+            _portfolioAssets = new List<Asset>();
+            _client = new MockClient();
+            balance= 10;
+        }
+
+        public PortfolioManager(IMarketClient marketClient)
+        {
+            _portfolioAssets = new List<Asset>();
+            _client = marketClient;
+        }
+
+        public decimal Balance
+        {
+            get { return balance; }
+        }
+
         public void AddFunds(decimal amount)
         {
-            throw new NotImplementedException();
+            if(amount > 0)
+            {
+                balance += amount;
+            }
+            else
+            {
+                Console.WriteLine("Invalid amount entered");
+            }
         }
 
         public List<AssetQuote> GetAssetInformation(List<string> assetNames)
@@ -63,7 +99,16 @@ namespace Portfolio
 
         public bool WithdrawFunds(decimal amount)
         {
-            throw new NotImplementedException();
+            if(amount > 0 && amount < balance)
+            {
+                balance = balance- amount;
+                return true;
+            }
+            else
+            {
+                Console.WriteLine("Invalid amount entered");
+                return false;
+            }
         }
     }
 }
