@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Net.Http;
+using System.Reflection.Metadata;
+using System.Text.Json;
 using Portfolio.Model;
 
 namespace Portfolio.Service.Live
@@ -16,7 +18,7 @@ namespace Portfolio.Service.Live
         public string BaseURL { get; set; }
 
         private HttpClient client;
-        
+
         /// <summary>
         /// A list of API keys for the Yahoo finance API. If a key is invalid or you have reached 
         /// the maximum number of requests then you can use another key.
@@ -28,7 +30,7 @@ namespace Portfolio.Service.Live
             BaseURL = url; // not needed
             APIKeys = apiKeys;
             client = new HttpClient();
-            client.BaseAddress= new Uri(BaseURL);
+            client.BaseAddress = new Uri(BaseURL);
         }
 
         /// <summary>
@@ -54,13 +56,55 @@ namespace Portfolio.Service.Live
             response.EnsureSuccessStatusCode();
             string responseBody = response.Content.ReadAsStringAsync().Result;
             Console.WriteLine("\n\nPrinting stock quote request for apple");
-            Console.WriteLine(responseBody);    
+            Console.WriteLine(responseBody);
 
             // Return an empty asset quote
-            return new AssetQuote();
-            
+            return ParseQuoteResponse(responseBody)[0];
+
             // TODO - You should parse the JSON to extract the necessary data for the asset quote
             // and return the correctly constructed quote. 
+        }
+
+        private List<AssetQuote> ParseQuoteResponse(string responseBody)
+        {
+            //Create an empty list of asset quotes
+            List<AssetQuote> quotes = new List<AssetQuote>();
+
+            //Deserialise the JSON responseBody
+            Root rawResult = JsonSerializer.Deserialize<Root>(responseBody);
+            if (rawResult.quoteResponse is not null)
+            {
+                foreach (Result quote in rawResult.quoteResponse.result)
+                {
+                    AssetQuote assetQuote = new AssetQuote();
+                    switch (quote.quoteType)
+                    {
+                        case "EQUITY":
+                            assetQuote.AssetType = AssetType.Equity;
+                            break;
+                        case "CURRENCY":
+                            assetQuote.AssetType = AssetType.Currency;
+                            break;
+                        default:
+                            assetQuote.AssetType = AssetType.Cryptocurrency;
+                            break;
+
+                    }
+                    //Read values from quote object and assign to the assetQuote
+                    assetQuote.AssetSymbol = quote.symbol;
+                    assetQuote.AssetFullName = quote.longName;
+                    assetQuote.AssetQuoteValue = (decimal)quote.regularMarketPrice;
+                    assetQuote.RegularMarketPreviousClose = (decimal)quote.regularMarketPreviousClose;
+                    assetQuote.RegularMarketOpen = (decimal)quote.regularMarketOpen;
+                    assetQuote.RegularMarketChange = (decimal)quote.regularMarketChange;
+                    assetQuote.RegularMarketChangePercentage = (float)quote.regularMarketChangePercent;
+                    DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+                    dateTime = dateTime.AddSeconds(quote.regularMarketTime).ToLocalTime();
+                    assetQuote.AssetQuoteTimeStamp = dateTime;
+                    quotes.Add(assetQuote);
+                }
+            }
+            return quotes;
         }
 
         /// <summary>
