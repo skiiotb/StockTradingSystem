@@ -39,5 +39,40 @@ namespace UnitTests
             //Assert
             Assert.Equal(expectedBalance, account.Balance);
         }
+
+        public void AddFunds_invalidAmount_NotEqual()
+        {
+            //Arrange
+            decimal initialBalance = 10.00m;
+            decimal amount = -5.00m;
+            decimal expectedBalance = 15.00m;
+            //Portfolio Number, Portfolio Owner and Initial balance.
+            //PortfolioManager account = new PortfolioManager("P0123456","Joe Bloggs", "10.0m");
+            PortfolioManager account = new PortfolioManager();
+
+            //Act
+            account.AddFunds(amount);
+
+            //Assert
+            Assert.NotEqual(expectedBalance, account.Balance);
+        }
+
+        public void WithdrawFunds_InvalidAmount_NotEqual()
+        {
+            //Arrange
+            decimal initialBalance = 10.00m;
+            decimal amount = -5.00m;
+            decimal expectedBalance = 15.00m;
+            //PortfolioManager account = new PortfolioManager("P0123456","Joe Bloggs", initialBalance);
+            PortfolioManager account = new PortfolioManager();
+
+
+            //Act
+            account.WithdrawFunds(amount);
+
+            //Assert
+            Assert.NotEqual(expectedBalance, account.Balance);
+        }
+
     }
 }
