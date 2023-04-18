@@ -1,4 +1,6 @@
 ﻿using Portfolio.Model;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace Portfolio.Service.TestDouble
 {
@@ -17,37 +19,15 @@ namespace Portfolio.Service.TestDouble
         /// <exception cref="NotImplementedException"></exception>
         public AssetQuote GetQuote(string assetSymbol)
         {
-            // Return the same test data every time
-
-            AssetQuote fakeAssetQuote = new AssetQuote();
-            fakeAssetQuote.AssetSymbol = GetAssetFullName(assetSymbol);
-            fakeAssetQuote.AssetFullName = "";
-            fakeAssetQuote.AssetQuoteValue = 250.0m;
-            fakeAssetQuote.RegularMarketOpen = 200.0m;
-            // todo set the rest of the property values
-            return fakeAssetQuote;
-
-
-            //throw new NotImplementedException();
-        }
-
-        private string GetAssetFullName(string assetSymbol)
-        {
-            switch (assetSymbol)
-            {
-                case "APPL":
-                    return "Apple inc";
-                    
-                case "MSFT":
-                    return "Microsoft inc";
-                    ;
-                case "NVDA":
-                    return "Nvidia inc";
-                    ;
-                default:
-                    return "Berkshire holdings";
-
-            }
+            // creating an AssetQuote object
+            AssetQuote objAssetQuote = new AssetQuote();
+            // assigning test data to the object 
+            objAssetQuote.AssetFullName = "APPLE";
+            objAssetQuote.AssetQuoteValue = 90;
+            objAssetQuote.AssetSymbol = assetSymbol;
+            objAssetQuote.AssetType = AssetType.Equity;
+            // returning the AssetQuote object
+            return objAssetQuote;
         }
 
         /// <summary>
@@ -58,7 +38,43 @@ namespace Portfolio.Service.TestDouble
         /// <exception cref="NotImplementedException"></exception>
         public List<AssetQuote> GetQuote(List<string> assetSymbols)
         {
-            throw new NotImplementedException();
+            // creating a list of type AssetQuote called assetList 
+            List<AssetQuote> assetList = new List<AssetQuote>(); 
+            // using a for each to check through each asset's symbol in assetList
+            foreach(string assetSymbol in assetSymbols)
+            {
+                // initializing assetName
+                string assetName = "";
+                // using a switch case to return the assetFullName according to the asset's symbol
+                switch (assetSymbol)
+                {
+                    case "APPL":
+                        assetName = "APPLE";
+                        break;
+                    case "TSLA":
+                        assetName = "TESLA";
+                        break;
+                    case "MSFT":
+                        assetName = "MICROSOFT";
+                        break;
+                    case "NVDA":
+                        assetName = "NVIDIA";
+                        break;
+                    default:
+                        assetName = "BIRKENSTOCK";
+                        break;
+                }
+                // creating an AssetQuote object
+                AssetQuote objAssetQuote = new AssetQuote();
+                // assigning values to the object
+                objAssetQuote.AssetFullName = assetName;
+                objAssetQuote.AssetQuoteValue = 90;
+                objAssetQuote.AssetSymbol = assetSymbol;
+                objAssetQuote.AssetType = AssetType.Equity;
+                // adding the AssetQuote object to the list assetList
+                assetList.Add(objAssetQuote);
+            }
+            return assetList;
         }
 
         /// <summary>
@@ -69,7 +85,13 @@ namespace Portfolio.Service.TestDouble
         /// <exception cref="NotImplementedException"></exception>
         public List<String> GetTrendingStocksForRegion(string region)
         {
-            throw new NotImplementedException();
+            // creating a list to contain symbols of trending stocks
+            List<String> trendingStockList = new List<String>();
+            // adding stock symbols to the list
+            trendingStockList.Add("AAPL");
+            trendingStockList.Add("TSLA");
+            // returning the list of asset symbols
+            return trendingStockList;
         }
 
     }
