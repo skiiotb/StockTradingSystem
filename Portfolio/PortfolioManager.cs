@@ -10,7 +10,7 @@ namespace Portfolio
 {
     public class PortfolioManager : IPortfolioSystem
     {
-        public decimal Balance { get; }
+
         public void AddFunds(decimal amount)
         {
             throw new NotImplementedException();
