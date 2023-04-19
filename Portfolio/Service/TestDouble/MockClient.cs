@@ -24,7 +24,7 @@ namespace Portfolio.Service.TestDouble
             // assigning test data to the object 
             objAssetQuote.AssetFullName = "APPLE";
             objAssetQuote.AssetQuoteValue = 90;
-            objAssetQuote.AssetSymbol = assetSymbol;
+            objAssetQuote.AssetSymbol = assetSymbol.ToUpper();
             objAssetQuote.AssetType = AssetType.Equity;
             // returning the AssetQuote object
             return objAssetQuote;
@@ -46,7 +46,7 @@ namespace Portfolio.Service.TestDouble
                 // initializing assetName
                 string assetName = "";
                 // using a switch case to return the assetFullName according to the asset's symbol
-                switch (assetSymbol)
+                switch (assetSymbol.ToUpper())
                 {
                     case "APPL":
                         assetName = "APPLE";
@@ -70,7 +70,7 @@ namespace Portfolio.Service.TestDouble
                 objAssetQuote.AssetFullName = assetName;
                 objAssetQuote.AssetQuoteValue = 90;
                 objAssetQuote.AssetSymbol = assetSymbol;
-                objAssetQuote.AssetType = AssetType.Equity;
+                objAssetQuote.AssetType= AssetType.Equity;
                 // adding the AssetQuote object to the list assetList
                 assetList.Add(objAssetQuote);
             }
