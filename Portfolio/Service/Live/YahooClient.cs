@@ -115,7 +115,12 @@ namespace Portfolio.Service.Live
         /// <exception cref="NotImplementedException"></exception>
         public List<AssetQuote> GetQuote(List<string> assetSymbols)
         {
-            throw new NotImplementedException();
+            var quotes = new List<AssetQuote>();
+            foreach (string symbol in assetSymbols)
+            {
+                quotes.Add(GetQuote(symbol));
+            }
+            return quotes;
         }
 
 
