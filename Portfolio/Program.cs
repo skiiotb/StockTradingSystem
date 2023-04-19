@@ -7,6 +7,8 @@ using Portfolio.Service.Live;
 using Portfolio.Service.TestDouble;
 using System.Numerics;
 using System.Text.Json;
+using Portfolio.Service.Live;
+using Portfolio.Service.TestDouble;
 
 // Load app configuration settings from the app settings file and set relevant feature flags.
 
@@ -19,7 +21,6 @@ IConfiguration appConfiguration = new ConfigurationBuilder()
 AppConfig? settings = appConfiguration.GetRequiredSection("AppConfig").Get<AppConfig>();
 
 Console.WriteLine("Welcome to the ATU Porfolio management system");
-
 
 
 // Creating a mock client
@@ -41,7 +42,26 @@ assetQuotes = portfolio1.GetAssetInformation(assetNames);
 var assetQuotesJson = JsonSerializer.Serialize(assetQuotes);
 Console.WriteLine("Asset Information: " + assetQuotesJson);
 
+
 /* TODO: Initialise and run your investment portfolio management system */
 
 /* Remember to add the fictional asset purchases specified in the assignment to the
    portfolio*/
+
+bool inDevelopment = settings.InDevelopment;
+if(inDevelopment)
+{
+    //Create an instance of the mock data client
+    MockClient mockClient = new MockClient();
+    AssetQuote test = mockClient.GetQuote("APPL");
+
+    AssetQuote test2 = mockClient.GetQuote("NVDA");
+}
+else
+{
+    // Get the live client
+    YahooClient financeClient = new YahooClient(url: settings.BaseURL, settings.API_keys);
+    financeClient.GetQuote("AAPL");
+
+}
+

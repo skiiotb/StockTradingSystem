@@ -21,4 +21,12 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\alexa\source\repos\cp1-2023-team3\Portfolio\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\Users\alexa\source\repos\cp1-2023-team3\Portfolio\.editorconfig" />
+  </ItemGroup>
+
 </Project>
