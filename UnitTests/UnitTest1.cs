@@ -193,5 +193,23 @@ namespace UnitTests
             }
         }
 
+        [Fact]
+        public void ListPortfolioPurchasesInRange_ValidRange_ReturnsString()
+        {
+            //Arrange
+            Portfolio.PortfolioManager portfolioManager = new Portfolio.PortfolioManager();
+            DateTime startDateTime = Convert.ToDateTime("03-03-2023 02:39:22");
+            DateTime endDateTime = DateTime.Now;
+            //ACT
+            var result = portfolioManager.ListPortfolioPurchasesInRange(startDateTime, endDateTime); //assigning the returned string to a variable result
+            if (String.IsNullOrEmpty(result))
+            {
+                //ASSERT
+                Assert.False(true);
+            }
+
+        }
+
+        
     }
 }

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection.Metadata;
 
 namespace Portfolio
 {
@@ -79,7 +80,21 @@ namespace Portfolio
 
         public string ListPortfolioPurchasesInRange(DateTime startDateTime, DateTime endDateTime)
         {
-            throw new NotImplementedException();
+            string PInRange;
+            foreach(var asset in _portfolioAssets)
+            {
+                if (asset.AssetPurchaseDateTime >= startDateTime && asset.AssetPurchaseDateTime <= endDateTime)
+                {
+                    PInRange = $"Asset: {asset.AssetSymbol}, Purchase Price: {asset.PurchaseCost}, Current Price: {asset.AssetQuote.AssetQuoteValue}, Change: {Math.Abs(asset.AssetQuote.AssetQuoteValue - asset.PurchaseCost)}";
+                    return PInRange;
+                }
+                else
+                {
+                    PInRange = "Out of range";
+                    return PInRange;
+                }
+            }
+            return PInRange = "No assets found within this timeframe";
         }
 
         public string ListPortfolioSalesInRange(DateTime startDateTime, DateTime endDateTime)
