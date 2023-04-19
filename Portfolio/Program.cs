@@ -1,6 +1,12 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Portfolio;
 using Portfolio.Application;
 using Portfolio.Model;
+using Portfolio.Service;
+using Portfolio.Service.Live;
+using Portfolio.Service.TestDouble;
+using System.Numerics;
+using System.Text.Json;
 using Portfolio.Service.Live;
 using Portfolio.Service.TestDouble;
 
@@ -15,6 +21,27 @@ IConfiguration appConfiguration = new ConfigurationBuilder()
 AppConfig? settings = appConfiguration.GetRequiredSection("AppConfig").Get<AppConfig>();
 
 Console.WriteLine("Welcome to the ATU Porfolio management system");
+
+
+// Creating a mock client
+IMarketClient marketClient = new MockClient();
+// creating a portfolio for the mock client
+PortfolioManager portfolio1 = new PortfolioManager(marketClient);
+// creating a list of type string to contain the asset symbols
+List<string> assetNames = new List<string>();
+// adding symbols to the list assetNames
+assetNames.Add("APPL");
+assetNames.Add("MSFT");
+// printing the portfolio value
+Console.WriteLine("Total portfolio value: " + portfolio1.GetPortfolioValue());
+// creating a list of type AssetQuote called assetQuotes,
+// to contain the information(AssetQuote objects) returned by the method GetAssetInformation(assetNames)
+List<AssetQuote> assetQuotes = new List<AssetQuote>();
+assetQuotes = portfolio1.GetAssetInformation(assetNames);
+//serializing the returned data
+var assetQuotesJson = JsonSerializer.Serialize(assetQuotes);
+Console.WriteLine("Asset Information: " + assetQuotesJson);
+
 
 /* TODO: Initialise and run your investment portfolio management system */
 
