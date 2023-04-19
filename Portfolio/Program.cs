@@ -7,6 +7,8 @@ using Portfolio.Service.Live;
 using Portfolio.Service.TestDouble;
 using System.Numerics;
 using System.Text.Json;
+using Portfolio.Service.Live;
+using Portfolio.Service.TestDouble;
 
 // Load app configuration settings from the app settings file and set relevant feature flags.
 
@@ -19,7 +21,6 @@ IConfiguration appConfiguration = new ConfigurationBuilder()
 AppConfig? settings = appConfiguration.GetRequiredSection("AppConfig").Get<AppConfig>();
 
 Console.WriteLine("Welcome to the ATU Porfolio management system");
-
 
 
 // Creating a mock client
@@ -40,6 +41,7 @@ assetQuotes = portfolio1.GetAssetInformation(assetNames);
 //serializing the returned data
 var assetQuotesJson = JsonSerializer.Serialize(assetQuotes);
 Console.WriteLine("Asset Information: " + assetQuotesJson);
+
 
 /* TODO: Initialise and run your investment portfolio management system */
 
