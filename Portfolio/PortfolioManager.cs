@@ -80,12 +80,37 @@ namespace Portfolio
 
         public string ListAllInvestements()
         {
-            throw new NotImplementedException();
+            StringBuilder investments = new StringBuilder();
+
+            foreach (Asset asset in _portfolioAssets)
+            {
+                AssetQuote assetQuote = _marketClient.GetQuote(asset.AssetSymbol);
+                decimal assetMarketValue = assetQuote.AssetQuoteValue;
+                decimal assetValue = assetMarketValue * asset.UnitsPurchased;
+
+                investments.AppendLine($"Asset: {asset.AssetSymbol}, Units Purchased: {asset.UnitsPurchased}, Current Value: {assetValue:C}");
+            }
+
+            return investments.ToString();
         }
 
         public string ListPortfolioAssetsByName(List<string> assetNames)
         {
-            throw new NotImplementedException();
+            StringBuilder resultBuilder = new StringBuilder();
+
+            foreach (Asset asset in _portfolioAssets)
+            {
+                if (assetNames.Contains(asset.AssetSymbol))
+                {
+                    AssetQuote assetQuote = _marketClient.GetQuote(asset.AssetSymbol);
+                    decimal currentAssetValue = assetQuote.AssetQuoteValue * asset.UnitsPurchased;
+                    decimal totalPurchaseCost = asset.PurchaseCost * asset.UnitsPurchased;
+
+                    resultBuilder.AppendLine($"Asset: {asset.AssetSymbol}, Units: {asset.UnitsPurchased}, Purchase Cost: {totalPurchaseCost}, Current Value: {currentAssetValue}");
+                }
+            }
+
+            return resultBuilder.ToString();
         }
 
         public string ListPortfolioInvestementsByType(string assetType)
