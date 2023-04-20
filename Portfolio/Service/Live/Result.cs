@@ -1,18 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Portfolio.Service.Live
-{
-    // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
-    // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
-    public class QuoteResponse
-    {
-        public object error { get; set; }
-        public List<Result> result { get; set; }
-    }
 
     public class Result
     {
