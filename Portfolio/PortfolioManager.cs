@@ -20,37 +20,17 @@ namespace Portfolio
         // Market client
         IMarketClient _marketClient;
 
-         public PortfolioManager()
+        private decimal balance;
+        public PortfolioManager()
         {
             _marketClient = new MockClient();
+            balance = 10;
         }
 
         public PortfolioManager(IMarketClient marketClient)
         {
             _marketClient = marketClient;
             
-        }
-
-        //List of assets
-        List<Asset> _portfolioAssets;
-
-        //Market Client
-        IMarketClient _client;
-
-
-        private decimal balance;
-
-        public PortfolioManager()
-        {
-            _portfolioAssets = new List<Asset>();
-            _client = new MockClient();
-            balance= 10;
-        }
-
-        public PortfolioManager(IMarketClient marketClient)
-        {
-            _portfolioAssets = new List<Asset>();
-            _client = marketClient;
         }
 
         public decimal Balance

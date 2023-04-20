@@ -46,7 +46,7 @@ Console.WriteLine("Asset Information: " + assetQuotesJson);
 
 /* TODO: Initialise and run your investment portfolio management system */
 
-//YahooClient financeClient = new YahooClient(url: settings.BaseURL, settings.API_keys);
+YahooClient financeClient = new YahooClient(url: settings.BaseURL, settings.API_keys);
 AssetQuote tempQuote = financeClient.GetQuote("AAPL");
 
 //PortfolioManager portfolio = new PortfolioManager(financeClient);
@@ -79,8 +79,8 @@ if(inDevelopment)
 else
 {
     // Get the live client
-    YahooClient financeClient = new YahooClient(url: settings.BaseURL, settings.API_keys);
-    financeClient.GetQuote("AAPL");
+     financeClient = new YahooClient(url: settings.BaseURL, settings.API_keys);
+     financeClient.GetQuote("AAPL");
 
 }
 
