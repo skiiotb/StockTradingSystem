@@ -59,7 +59,17 @@ namespace Portfolio.Service.Live
             Console.WriteLine(responseBody);
 
             // Return an empty asset quote
-            return ParseQuoteResponse(responseBody)[0];
+            //return ParseQuoteResponse(responseBody)[0];
+            List<AssetQuote> quotes = ParseQuoteResponse(responseBody);
+            if (quotes.Count > 0)
+            {
+                return quotes[0];
+            }
+            else
+            {
+                // Return a default asset quote if no quotes are found
+                return new AssetQuote();
+            }
 
             // TODO - You should parse the JSON to extract the necessary data for the asset quote
             // and return the correctly constructed quote. 
@@ -107,6 +117,7 @@ namespace Portfolio.Service.Live
             return quotes;
         }
 
+       
         /// <summary>
         /// Gets a list of AssetQuotes <see cref="AssetQuote"/>from an exchange for the asset.
         /// </summary>
@@ -115,9 +126,11 @@ namespace Portfolio.Service.Live
         /// <exception cref="NotImplementedException"></exception>
         public List<AssetQuote> GetQuote(List<string> assetSymbols)
         {
+            //Create a new list of assetQuotes
             var quotes = new List<AssetQuote>();
             foreach (string symbol in assetSymbols)
             {
+                //Parses through list of symbols inputted and then addes a quote for each symbol to the list we are returning
                 quotes.Add(GetQuote(symbol));
             }
             return quotes;
@@ -132,7 +145,26 @@ namespace Portfolio.Service.Live
         /// <exception cref="NotImplementedException"></exception>
         public List<string> GetTrendingStocksForRegion(string region)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            string endpoint = $"/v1/finance/trending/{region}";
+            string parameters = @"region=US&lang=en&symbols=";
+            string url = endpoint + "?" + parameters;
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
+            requestMessage.Headers.Add("x-api-key", APIKeys[0]);
+
+            var task = client.SendAsync(requestMessage);
+            var response = task.Result;
+            response.EnsureSuccessStatusCode();
+            string responseBody = response.Content.ReadAsStringAsync().Result;
+            Console.WriteLine($"\n\nPrinting stock quote request for {region}");
+            Console.WriteLine(responseBody);
+
+            // Return the list of asset quotes as strings
+            //Uses enumerable toList method to force list of AssetQuotes into a list of Strings containing the trending stock symbols
+            List<AssetQuote> assetQuotes = ParseQuoteResponse(responseBody);
+            List<string> symbols = assetQuotes.Select(q => q.AssetSymbol).ToList();
+
+            return symbols;
         }
     }
 }

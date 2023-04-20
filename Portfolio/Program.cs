@@ -30,12 +30,15 @@ AssetQuote tempQuote = financeClient.GetQuote("AAPL");
 //MarketClient marketClient = new MockClient();
 
 //PortfolioManager portfolio2 = new PortfolioManager(marketClient);
+//Create list of asset symbols to get quotes for
 List<string> assetSymbols = new List<string>();
 assetSymbols.Add("MSFT");
 assetSymbols.Add("TSLA");
 List<AssetQuote> tempQuotes = financeClient.GetQuote(assetSymbols);
 
 Console.WriteLine($"Live stock information for {tempQuote.AssetFullName} current value is ${tempQuote.AssetQuoteValue}");
+
+financeClient.GetTrendingStocksForRegion("US");
 
 /* Remember to add the fictional asset purchases specified in the assignment to the
    portfolio*/
