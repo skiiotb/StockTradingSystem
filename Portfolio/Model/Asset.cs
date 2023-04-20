@@ -47,6 +47,8 @@
         /// </summary>
         public int UnitsPurchased { get; set; }
 
+        public AssetQuote AssetQuote { get; set; }
+
         // TODO - Design and Implement the Asset class as you see fit. Justify the design decisions
         // that you make within the implementation.
 

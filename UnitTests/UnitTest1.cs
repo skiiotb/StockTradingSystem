@@ -5,7 +5,7 @@ namespace UnitTests
     public class PortfolioWithdrawAndAddFunds 
     {
         [Fact]
-<
+
         public void AddFunds_ValidAmount_ChangesBalance()
         {
             //Arrange
@@ -18,11 +18,11 @@ namespace UnitTests
 
             //Act
             account.AddFunds(amount);
-            
             //Assert
             Assert.Equal(expectedBalance, account.Balance);
         }
 
+        [Fact]
         public void SellAsset_ValidAmount_ReturnTrue()
         {
             //AAA Unit testing
@@ -140,6 +140,7 @@ namespace UnitTests
             Assert.Equal(expectedBalance, account.Balance);
         }
 
+        [Fact]
         public void AddFunds_invalidAmount_NotEqual()
         {
             //Arrange
@@ -157,6 +158,7 @@ namespace UnitTests
             Assert.NotEqual(expectedBalance, account.Balance);
         }
 
+        [Fact]
         public void WithdrawFunds_InvalidAmount_NotEqual()
         {
             //Arrange
@@ -174,6 +176,7 @@ namespace UnitTests
             Assert.NotEqual(expectedBalance, account.Balance);
         }
 
+        [Fact]
         public void ListPortfolioInvestmentsByType_ValidType_ReturnsString()
         {
             //Arrange
@@ -190,5 +193,23 @@ namespace UnitTests
             }
         }
 
+        [Fact]
+        public void ListPortfolioPurchasesInRange_ValidRange_ReturnsString()
+        {
+            //Arrange
+            Portfolio.PortfolioManager portfolioManager = new Portfolio.PortfolioManager();
+            DateTime startDateTime = Convert.ToDateTime("03-03-2023 02:39:22");
+            DateTime endDateTime = DateTime.Now;
+            //ACT
+            var result = portfolioManager.ListPortfolioPurchasesInRange(startDateTime, endDateTime); //assigning the returned string to a variable result
+            if (String.IsNullOrEmpty(result))
+            {
+                //ASSERT
+                Assert.False(true);
+            }
+
+        }
+
+        
     }
 }
