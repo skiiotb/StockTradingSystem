@@ -119,12 +119,69 @@ namespace Portfolio
 
         public bool PurchaseAsset(string assetSymbol, decimal amount)
         {
-            throw new NotImplementedException();
+            AssetQuote assetQuote = _marketClient.GetQuote(assetSymbol);
+
+            //if the asset quote isnt found
+            if (assetQuote == null)
+            {
+                Console.WriteLine("Asset not found on the market");
+                return false;
+            }
+
+            decimal assetMarketValue = assetQuote.AssetQuoteValue;
+            decimal purchaseCost = assetMarketValue * amount;
+
+            //if balance is less than price
+            if (balance < purchaseCost)
+            {
+                Console.WriteLine("Insufficient funds to purchase asset");
+                return false;
+            }
+
+            Asset assetToBuy = new Asset();
+            assetToBuy.AssetSymbol = assetSymbol;
+            assetToBuy.PurchaseCost = purchaseCost;
+            assetToBuy.AssetPurchaseDateTime = DateTime.Now;
+
+            _portfolioAssets.Add(assetToBuy);
+            balance -= purchaseCost;
+
+            return true;
+
         }
 
         public bool SellAsset(string assetSymbol, decimal amount)
         {
-            throw new NotImplementedException();
+            Asset assetToSell = null;
+
+            foreach (Asset asset in _portfolioAssets)
+            {
+                if (asset.AssetSymbol == assetSymbol)
+                {
+                    assetToSell = asset;
+                    break;
+                }
+            }
+            //Asset Symbol not found
+            if (assetToSell == null)
+            {
+                Console.WriteLine("Asset not found in portfolio");
+                return false;
+            }
+
+            //Amount of units in the portfolio is lower than the amount trying to be sold
+            if (assetToSell.UnitsPurchased < amount)
+            {
+                Console.WriteLine("Insufficient units to sell");
+                return false;
+            }
+
+            decimal assetMarketValue = _marketClient.GetQuote(assetToSell.AssetSymbol).AssetQuoteValue;
+            decimal saleProceeds = assetMarketValue * amount;
+
+            balance += saleProceeds;
+
+            return true;
         }
 
         public bool WithdrawFunds(decimal amount)
