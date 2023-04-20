@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Net.Http;
+using System.Reflection.Metadata;
+using System.Text.Json;
 using Portfolio.Model;
 
 namespace Portfolio.Service.Live
@@ -16,7 +18,7 @@ namespace Portfolio.Service.Live
         public string BaseURL { get; set; }
 
         private HttpClient client;
-        
+
         /// <summary>
         /// A list of API keys for the Yahoo finance API. If a key is invalid or you have reached 
         /// the maximum number of requests then you can use another key.
@@ -28,7 +30,7 @@ namespace Portfolio.Service.Live
             BaseURL = url; // not needed
             APIKeys = apiKeys;
             client = new HttpClient();
-            client.BaseAddress= new Uri(BaseURL);
+            client.BaseAddress = new Uri(BaseURL);
         }
 
         /// <summary>
@@ -54,15 +56,68 @@ namespace Portfolio.Service.Live
             response.EnsureSuccessStatusCode();
             string responseBody = response.Content.ReadAsStringAsync().Result;
             Console.WriteLine("\n\nPrinting stock quote request for apple");
-            Console.WriteLine(responseBody);    
+            Console.WriteLine(responseBody);
 
             // Return an empty asset quote
-            return new AssetQuote();
-            
+            //return ParseQuoteResponse(responseBody)[0];
+            List<AssetQuote> quotes = ParseQuoteResponse(responseBody);
+            if (quotes.Count > 0)
+            {
+                return quotes[0];
+            }
+            else
+            {
+                // Return a default asset quote if no quotes are found
+                return new AssetQuote();
+            }
+
             // TODO - You should parse the JSON to extract the necessary data for the asset quote
             // and return the correctly constructed quote. 
         }
 
+        private List<AssetQuote> ParseQuoteResponse(string responseBody)
+        {
+            //Create an empty list of asset quotes
+            List<AssetQuote> quotes = new List<AssetQuote>();
+
+            //Deserialise the JSON responseBody
+            Root rawResult = JsonSerializer.Deserialize<Root>(responseBody);
+            if (rawResult.quoteResponse is not null)
+            {
+                foreach (Result quote in rawResult.quoteResponse.result)
+                {
+                    AssetQuote assetQuote = new AssetQuote();
+                    switch (quote.quoteType)
+                    {
+                        case "EQUITY":
+                            assetQuote.AssetType = AssetType.Equity;
+                            break;
+                        case "CURRENCY":
+                            assetQuote.AssetType = AssetType.Currency;
+                            break;
+                        default:
+                            assetQuote.AssetType = AssetType.Cryptocurrency;
+                            break;
+
+                    }
+                    //Read values from quote object and assign to the assetQuote
+                    assetQuote.AssetSymbol = quote.symbol;
+                    assetQuote.AssetFullName = quote.longName;
+                    assetQuote.AssetQuoteValue = (decimal)quote.regularMarketPrice;
+                    assetQuote.RegularMarketPreviousClose = (decimal)quote.regularMarketPreviousClose;
+                    assetQuote.RegularMarketOpen = (decimal)quote.regularMarketOpen;
+                    assetQuote.RegularMarketChange = (decimal)quote.regularMarketChange;
+                    assetQuote.RegularMarketChangePercentage = (float)quote.regularMarketChangePercent;
+                    DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+                    dateTime = dateTime.AddSeconds(quote.regularMarketTime).ToLocalTime();
+                    assetQuote.AssetQuoteTimeStamp = dateTime;
+                    quotes.Add(assetQuote);
+                }
+            }
+            return quotes;
+        }
+
+       
         /// <summary>
         /// Gets a list of AssetQuotes <see cref="AssetQuote"/>from an exchange for the asset.
         /// </summary>
@@ -71,7 +126,14 @@ namespace Portfolio.Service.Live
         /// <exception cref="NotImplementedException"></exception>
         public List<AssetQuote> GetQuote(List<string> assetSymbols)
         {
-            throw new NotImplementedException();
+            //Create a new list of assetQuotes
+            var quotes = new List<AssetQuote>();
+            foreach (string symbol in assetSymbols)
+            {
+                //Parses through list of symbols inputted and then addes a quote for each symbol to the list we are returning
+                quotes.Add(GetQuote(symbol));
+            }
+            return quotes;
         }
 
 
@@ -83,7 +145,26 @@ namespace Portfolio.Service.Live
         /// <exception cref="NotImplementedException"></exception>
         public List<string> GetTrendingStocksForRegion(string region)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            string endpoint = $"/v1/finance/trending/{region}";
+            string parameters = @"region=US&lang=en&symbols=";
+            string url = endpoint + "?" + parameters;
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
+            requestMessage.Headers.Add("x-api-key", APIKeys[0]);
+
+            var task = client.SendAsync(requestMessage);
+            var response = task.Result;
+            response.EnsureSuccessStatusCode();
+            string responseBody = response.Content.ReadAsStringAsync().Result;
+            Console.WriteLine($"\n\nPrinting stock quote request for {region}");
+            Console.WriteLine(responseBody);
+
+            // Return the list of asset quotes as strings
+            //Uses enumerable toList method to force list of AssetQuotes into a list of Strings containing the trending stock symbols
+            List<AssetQuote> assetQuotes = ParseQuoteResponse(responseBody);
+            List<string> symbols = assetQuotes.Select(q => q.AssetSymbol).ToList();
+
+            return symbols;
         }
     }
 }
