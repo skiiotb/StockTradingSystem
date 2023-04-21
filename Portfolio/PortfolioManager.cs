@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection.Metadata;
+using System.Text.Json;
 
 namespace Portfolio
 {   
@@ -15,12 +16,13 @@ namespace Portfolio
     {
         // List of assets
         List<Asset> _portfolioAssets = new List<Asset>();
-        Asset asset1 = new Asset();
         
         // Market client
         IMarketClient _marketClient;
 
         private decimal balance;
+        decimal portfolioValue = 0.0m;
+        
         public PortfolioManager()
         {
             _marketClient = new MockClient();
@@ -62,11 +64,7 @@ namespace Portfolio
 
         public decimal GetPortfolioValue()
         {
-            // test data
-            asset1.AssetSymbol = "APPL";
-            asset1.UnitsPurchased = 2;
-            _portfolioAssets.Add(asset1);
-            decimal portfolioValue = 0.0m;
+            
             // Iterate through the list of assets and get the current value of each
             foreach(Asset asset in _portfolioAssets)
             {
@@ -138,22 +136,29 @@ namespace Portfolio
                 return false;
             }
 
+            // checking if the amount value to purchase is a valid number
+            if (amount <= 0)
+            {
+                Console.WriteLine("Invalid amount entered");
+                return false;
+            }
+
             Asset assetToBuy = new Asset();
             assetToBuy.AssetSymbol = assetSymbol;
             assetToBuy.PurchaseCost = purchaseCost;
             assetToBuy.AssetPurchaseDateTime = DateTime.Now;
-
+           // assetToBuy.UnitsPurchased +=(int) amount;
             _portfolioAssets.Add(assetToBuy);
             balance -= purchaseCost;
-
+            // updating the portfolioValue, adding the value of assets purchased to portfolioValue
+            portfolioValue += purchaseCost;
             return true;
 
         }
 
         public bool SellAsset(string assetSymbol, decimal amount)
         {
-            Asset assetToSell = null;
-
+            Asset assetToSell = new Asset();
             foreach (Asset asset in _portfolioAssets)
             {
                 if (asset.AssetSymbol == assetSymbol)
@@ -163,24 +168,36 @@ namespace Portfolio
                 }
             }
             //Asset Symbol not found
-            if (assetToSell == null)
+            if (assetToSell == null || _portfolioAssets.Contains(assetToSell) == false)
             {
                 Console.WriteLine("Asset not found in portfolio");
                 return false;
             }
 
             //Amount of units in the portfolio is lower than the amount trying to be sold
-            if (assetToSell.UnitsPurchased < amount)
-            {
-                Console.WriteLine("Insufficient units to sell");
-                return false;
-            }
-
+         //   if (assetToSell.UnitsPurchased < amount)
+         //   {
+         //       Console.WriteLine("Insufficient units to sell");
+         //       return false;
+         //   }
+            
             decimal assetMarketValue = _marketClient.GetQuote(assetToSell.AssetSymbol).AssetQuoteValue;
             decimal saleProceeds = assetMarketValue * amount;
-
+            // checking if the amount value to sell is a valid number 
+            if (amount <= 0)
+            {
+                Console.WriteLine("Invalid amount entered");
+                return false;
+            }
+            //checking if the overall saleProceeds is greater than portfolioValue and returning false
+            if (saleProceeds > portfolioValue)
+            {
+                Console.WriteLine("Insufficient funds");
+                return false;
+            }
             balance += saleProceeds;
-
+            //taking away value of the amount of stock sold from portfolio value
+            portfolioValue = portfolioValue - saleProceeds;
             return true;
         }
 
