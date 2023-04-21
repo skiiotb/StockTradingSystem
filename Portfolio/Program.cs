@@ -23,7 +23,7 @@ AppConfig? settings = appConfiguration.GetRequiredSection("AppConfig").Get<AppCo
 
 Console.WriteLine("Welcome to the ATU Porfolio management system");
 
-
+/*
 // Creating a mock client
 IMarketClient marketClient = new MockClient();
 // creating a portfolio for the mock client
@@ -42,12 +42,12 @@ assetQuotes = portfolio1.GetAssetInformation(assetNames);
 //serializing the returned data
 var assetQuotesJson = JsonSerializer.Serialize(assetQuotes);
 Console.WriteLine("Asset Information: " + assetQuotesJson);
-
+*/
 
 /* TODO: Initialise and run your investment portfolio management system */
 
-YahooClient financeClient = new YahooClient(url: settings.BaseURL, settings.API_keys);
-AssetQuote tempQuote = financeClient.GetQuote("AAPL");
+//YahooClient financeClient = new YahooClient(url: settings.BaseURL, settings.API_keys);
+//AssetQuote tempQuote = financeClient.GetQuote("AAPL");
 
 //PortfolioManager portfolio = new PortfolioManager(financeClient);
 
@@ -55,14 +55,14 @@ AssetQuote tempQuote = financeClient.GetQuote("AAPL");
 
 //PortfolioManager portfolio2 = new PortfolioManager(marketClient);
 //Create list of asset symbols to get quotes for
-List<string> assetSymbols = new List<string>();
-assetSymbols.Add("MSFT");
-assetSymbols.Add("TSLA");
-List<AssetQuote> tempQuotes = financeClient.GetQuote(assetSymbols);
+//List<string> assetSymbols = new List<string>();
+//assetSymbols.Add("MSFT");
+//assetSymbols.Add("TSLA");
+//List<AssetQuote> tempQuotes = financeClient.GetQuote(assetSymbols);
 
-Console.WriteLine($"Live stock information for {tempQuote.AssetFullName} current value is ${tempQuote.AssetQuoteValue}");
+//Console.WriteLine($"Live stock information for {tempQuote.AssetFullName} current value is ${tempQuote.AssetQuoteValue}");
 
-financeClient.GetTrendingStocksForRegion("US");
+//financeClient.GetTrendingStocksForRegion("US");
 
 /* Remember to add the fictional asset purchases specified in the assignment to the
    portfolio*/
@@ -78,9 +78,9 @@ if(inDevelopment)
 }
 else
 {
-    // Get the live client
-     financeClient = new YahooClient(url: settings.BaseURL, settings.API_keys);
-     financeClient.GetQuote("AAPL");
+   //  Get the live client
+   //   financeClient = new YahooClient(url: settings.BaseURL, settings.API_keys);
+   //  financeClient.GetQuote("AAPL");
 
 }
 
@@ -88,6 +88,8 @@ else
 
 // creating a portfolio object 
 PortfolioManager portfolioUser = new PortfolioManager();
+// live client
+YahooClient userClient = new YahooClient(url: settings.BaseURL, settings.API_keys);
 // variable 'option' to let the user choose an option from the avaiable options
 int option = 0;
 // variable 'amt' to let the user enter amount related to assets where applicable
@@ -108,7 +110,9 @@ do
     Console.WriteLine("7: Get summary of asset purchases in range");
     Console.WriteLine("8: Get summary of asset sales in range");
     Console.WriteLine("9: Get portfolio summary");
-    Console.WriteLine("10: Exit");
+    Console.WriteLine("10: Get list of trending assets within a region");
+    Console.WriteLine("11: Get live information on assets");
+    Console.WriteLine("12: Exit");
     Console.WriteLine("Enter option: ");
     option = int.Parse(Console.ReadLine());
     switch (option)
@@ -197,11 +201,34 @@ do
             Console.WriteLine(portfolioUser.ListAllInvestements());
             break;
         case 10:
+            string regionInput;
+            Console.WriteLine("Enter region");
+            regionInput = Console.ReadLine();
+            Console.WriteLine(JsonSerializer.Serialize(userClient.GetTrendingStocksForRegion(regionInput)));
+            break;
+        case 11:
+            char yesOrNoInput = ' ';
+            string assetNamesInput;
+            List<string> liveAssetList = new List<string>();
+            do
+            {
+                Console.WriteLine("Enter Asset name: ");
+                assetNamesInput = Console.ReadLine();
+                liveAssetList.Add(assetNamesInput);
+                Console.WriteLine("Do you want to enter another asset name? y/n ");
+                yesOrNoInput = char.Parse(Console.ReadLine());
+            } while (yesOrNoInput != 'n' && yesOrNoInput != 'N');
+
+            Console.WriteLine(JsonSerializer.Serialize(userClient.GetQuote(liveAssetList)));
+            break;
+        case 12:
             Console.WriteLine("Thank you");
             break;
-
+        default:
+            Console.WriteLine("INVALID OPTION! Please choose an option from the system");
+            break;
 
     }
-} while (option != 10);
+} while (option != 12);
 
 
