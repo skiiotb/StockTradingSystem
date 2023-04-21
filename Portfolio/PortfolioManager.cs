@@ -64,15 +64,19 @@ namespace Portfolio
 
         public decimal GetPortfolioValue()
         {
-            
+
             // Iterate through the list of assets and get the current value of each
-            foreach(Asset asset in _portfolioAssets)
+            portfolioValue = 0;
+            foreach (Asset asset in _portfolioAssets)
             {
                 decimal assetMarketValue = _marketClient.GetQuote(asset.AssetSymbol).AssetQuoteValue;
                 portfolioValue += assetMarketValue * asset.UnitsPurchased;
                 
             }
-
+            if(portfolioValue < 0)
+            {
+                portfolioValue= 0;
+            }
             return portfolioValue;
         }
 
@@ -95,20 +99,29 @@ namespace Portfolio
         public string ListPortfolioAssetsByName(List<string> assetNames)
         {
             StringBuilder resultBuilder = new StringBuilder();
-
-            foreach (Asset asset in _portfolioAssets)
+            decimal currentAssetValue = 0;
+            decimal totalPurchaseCost = 0;
+            int unitPurchased = 0;
+            foreach (string assetName in assetNames)
             {
-                if (assetNames.Contains(asset.AssetSymbol))
+                foreach (Asset asset in _portfolioAssets)
                 {
-                    AssetQuote assetQuote = _marketClient.GetQuote(asset.AssetSymbol);
-                    decimal currentAssetValue = assetQuote.AssetQuoteValue * asset.UnitsPurchased;
-                    decimal totalPurchaseCost = asset.PurchaseCost * asset.UnitsPurchased;
-
-                    resultBuilder.AppendLine($"Asset: {asset.AssetSymbol}, Units: {asset.UnitsPurchased}, Purchase Cost: {totalPurchaseCost}, Current Value: {currentAssetValue}");
+                    if (assetNames.Contains(asset.AssetSymbol))
+                    {
+                        AssetQuote assetQuote = _marketClient.GetQuote(asset.AssetSymbol);
+                        currentAssetValue += assetQuote.AssetQuoteValue * asset.UnitsPurchased;
+                        totalPurchaseCost += asset.PurchaseCost * asset.UnitsPurchased;
+                        unitPurchased += asset.UnitsPurchased;
+                       // resultBuilder.AppendLine($"Asset: {asset.AssetSymbol}, Units: {asset.UnitsPurchased}, Purchase Cost: {totalPurchaseCost}, Current Value: {currentAssetValue}");
+                    }
                 }
+                if(!resultBuilder.ToString().Contains(assetName))
+                {
+                    resultBuilder.AppendLine($"Asset: {assetName}, Units: {unitPurchased}, Purchase Cost: {totalPurchaseCost}, Current Value: {currentAssetValue}");
+                }
+               
             }
-
-            return resultBuilder.ToString();
+                return resultBuilder.ToString();
         }
 
         public string ListPortfolioInvestementsByType(string assetType)
@@ -152,7 +165,7 @@ namespace Portfolio
             }
 
             decimal assetMarketValue = assetQuote.AssetQuoteValue;
-            decimal purchaseCost = assetMarketValue * amount;
+            decimal purchaseCost = assetMarketValue;
 
             //if balance is less than price
             if (balance < purchaseCost)
@@ -172,11 +185,11 @@ namespace Portfolio
             assetToBuy.AssetSymbol = assetSymbol;
             assetToBuy.PurchaseCost = purchaseCost;
             assetToBuy.AssetPurchaseDateTime = DateTime.Now;
-           // assetToBuy.UnitsPurchased +=(int) amount;
+            assetToBuy.UnitsPurchased =Convert.ToInt32(amount);
             _portfolioAssets.Add(assetToBuy);
             balance -= purchaseCost;
             // updating the portfolioValue, adding the value of assets purchased to portfolioValue
-            portfolioValue += purchaseCost;
+           // portfolioValue += purchaseCost;
             return true;
 
         }
@@ -189,6 +202,7 @@ namespace Portfolio
                 if (asset.AssetSymbol == assetSymbol)
                 {
                     assetToSell = asset;
+                    asset.UnitsPurchased = asset.UnitsPurchased - Convert.ToInt32(amount);
                     break;
                 }
             }
@@ -223,6 +237,7 @@ namespace Portfolio
             balance += saleProceeds;
             //taking away value of the amount of stock sold from portfolio value
             portfolioValue = portfolioValue - saleProceeds;
+            
             return true;
         }
 
