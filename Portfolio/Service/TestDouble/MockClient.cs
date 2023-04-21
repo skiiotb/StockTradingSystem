@@ -21,12 +21,37 @@ namespace Portfolio.Service.TestDouble
         {
             // creating an AssetQuote object
             AssetQuote objAssetQuote = new AssetQuote();
-            // assigning test data to the object 
-            objAssetQuote.AssetFullName = "APPLE";
-            objAssetQuote.AssetQuoteValue = 90;
-            objAssetQuote.AssetSymbol = assetSymbol.ToUpper();
-            objAssetQuote.AssetType = AssetType.Equity;
-            // returning the AssetQuote object
+            switch (assetSymbol.ToUpper())
+            {
+                case "APPL":
+                    objAssetQuote.AssetFullName = "APPLE";
+                    objAssetQuote.AssetQuoteValue = 90;
+                    objAssetQuote.AssetSymbol = assetSymbol.ToUpper();
+                    objAssetQuote.AssetType = AssetType.Equity;
+                    break;
+                case "TSLA":
+                    objAssetQuote.AssetFullName = "TESLA";
+                    objAssetQuote.AssetQuoteValue = 120;
+                    objAssetQuote.AssetSymbol = assetSymbol.ToUpper();
+                    objAssetQuote.AssetType = AssetType.Equity;
+                    break;
+                case "MSFT":
+                    objAssetQuote.AssetFullName = "MICROSOFT";
+                    objAssetQuote.AssetQuoteValue = 180;
+                    objAssetQuote.AssetSymbol = assetSymbol.ToUpper();
+                    objAssetQuote.AssetType = AssetType.Equity;
+                    break;
+                case "NVDA":
+                    objAssetQuote.AssetFullName = "NVIDIA";
+                    objAssetQuote.AssetQuoteValue = 80;
+                    objAssetQuote.AssetSymbol = assetSymbol.ToUpper();
+                    objAssetQuote.AssetType = AssetType.Equity;
+                    break;
+                default:
+                    objAssetQuote.AssetFullName = "BIRKENSTOCK";
+                    Console.WriteLine("Invalid asset name");
+                    break;
+            }
             return objAssetQuote;
         }
 
