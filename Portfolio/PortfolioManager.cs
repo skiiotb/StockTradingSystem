@@ -90,7 +90,7 @@ namespace Portfolio
                 decimal assetMarketValue = assetQuote.AssetQuoteValue;
                 decimal assetValue = assetMarketValue * asset.UnitsPurchased;
 
-                investments.AppendLine($"Asset: {asset.AssetSymbol}, Units Purchased: {asset.UnitsPurchased}, Current Value: {assetValue:C}");
+                investments.AppendLine($"Asset: {asset.AssetSymbol}, Units Purchased: {asset.UnitsPurchased}, Current Value: {assetValue:C}, Date Purchased: {asset.AssetPurchaseDateTime}");
             }
 
             return investments.ToString();
@@ -131,21 +131,22 @@ namespace Portfolio
 
         public string ListPortfolioPurchasesInRange(DateTime startDateTime, DateTime endDateTime)
         {
-            string PInRange;
-            foreach(var asset in _portfolioAssets)
+            StringBuilder PInRange=new StringBuilder();
+            foreach(Asset asset in _portfolioAssets)
             {
                 if (asset.AssetPurchaseDateTime >= startDateTime && asset.AssetPurchaseDateTime <= endDateTime)
                 {
-                    PInRange = $"Asset: {asset.AssetSymbol}, Purchase Price: {asset.PurchaseCost}, Current Price: {asset.AssetQuote.AssetQuoteValue}, Change: {Math.Abs(asset.AssetQuote.AssetQuoteValue - asset.PurchaseCost)}";
-                    return PInRange;
-                }
-                else
-                {
-                    PInRange = "Out of range";
-                    return PInRange;
+                    AssetQuote assetQuote = _marketClient.GetQuote(asset.AssetSymbol);
+                    if(assetQuote != null)
+                    {
+                        PInRange.AppendLine($"Asset: {asset.AssetSymbol}, Purchase Price: {asset.PurchaseCost}, Current Price: {assetQuote.AssetQuoteValue}, Change: {Math.Abs(assetQuote.AssetQuoteValue - asset.PurchaseCost)}");
+                        PInRange.AppendLine();
+                    }
+                    
+                    //return PInRange;
                 }
             }
-            return PInRange = "No assets found within this timeframe";
+            return PInRange.ToString();
         }
 
         public string ListPortfolioSalesInRange(DateTime startDateTime, DateTime endDateTime)
